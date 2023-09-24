@@ -70,6 +70,24 @@ func (client *Client) DealResponse() {
 	io.Copy(os.Stdout, client.conn)
 }
 
+func (client *Client) PublicChat() {
+	var chatMsg string
+	for chatMsg != "exit" {
+		fmt.Println(">>>>请输入聊天内容，exit退出>>>>")
+		fmt.Scanln(&chatMsg)
+		if len(chatMsg) == 0 {
+			continue
+		}
+		sendMsg := chatMsg + "\n"
+		_, err := client.conn.Write([]byte(sendMsg))
+		if err != nil {
+			fmt.Println("conn.Write err:", err)
+			break
+		}
+
+	}
+}
+
 func (client *Client) Run() {
 	for client.flag != 0 {
 		for client.menu() != true {
@@ -77,7 +95,7 @@ func (client *Client) Run() {
 
 		switch client.flag {
 		case 1:
-			fmt.Println("公聊模式")
+			client.PublicChat()
 			break
 		case 2:
 			fmt.Println("私聊模式")
